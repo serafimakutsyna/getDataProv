@@ -1,0 +1,38 @@
+function getDataProv(bDate, bProvider, tabName, range)
+{
+    $.blockUI({
+        message: "<p>Пожалуйста подождите...</p>",
+        css: { backgroundColor: "#f00", color: "#fff" },
+        overlayCSS: { backgroundColor: "#000", opacity: 0.1, cursor: "wait" }
+    });
+    var formData = $("#hlblock-table-form").serializeArray();
+    // console.log(provName);
+
+    var index, len;
+    for (index = 0, len = formData.length; index < len; ++index)
+    {
+        if (formData[index].name == "site") formData[index].value = 0;
+        if (formData[index].name == "provnal") formData[index].value = "all";
+        if (formData[index].name == "providers") formData[index].value = bProvider;
+    }
+
+    $("#intable").load(
+        ajaxPath + "/table.php",
+        {
+            data: formData,
+            pagen: pagen,
+            getDataProv: bDate,
+            tab: tabName,
+            range: range
+        },
+        function ()
+        {
+            $(".editblock").hide();
+            $.unblockUI();
+            forTable();
+            $("input.edit:checkbox").setCheckboxesShift();
+            $("input.product_hidden:checkbox").setCheckboxesShift();
+            newItem = false;
+        }
+    );
+}
